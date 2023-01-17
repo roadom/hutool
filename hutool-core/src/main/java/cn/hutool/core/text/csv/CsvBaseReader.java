@@ -188,6 +188,20 @@ public class CsvBaseReader implements Serializable {
 	 */
 	public <T> List<T> read(Reader reader, Class<T> clazz) {
 		// 此方法必须包含标题
+		return this.read(reader, clazz, new ConverterOptions());
+	}
+
+	/**
+	 * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader。<br>
+	 * 此方法默认识别首行为标题行。
+	 *
+	 * @param <T>    Bean类型
+	 * @param reader Reader
+	 * @param clazz  Bean类型
+	 * @return Bean列表
+	 */
+	public <T> List<T> read(Reader reader, Class<T> clazz, ConverterOptions converterEunm) {
+		// 此方法必须包含标题
 		this.config.setContainsHeader(true);
 
 		final List<T> result = new ArrayList<>();

@@ -9,11 +9,12 @@ import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 public class CsvReaderTest {
-	
+
 	@Test
 	public void readTest() {
 		CsvReader reader = new CsvReader();
@@ -84,4 +85,21 @@ public class CsvReaderTest {
 			Console.log(strings);
 		}
 	}
+
+	@Test
+	public void testReadInObj(){
+		CsvReader reader = new CsvReader();
+		List<City> data = reader.read(ResourceUtil.getReader("test_underline_data.csv", CharsetUtil.CHARSET_UTF_8), City.class);
+		System.out.println();
+	}
+	private class City{
+		private String name;
+		private String provinceName;
+		private BigDecimal population;
+		private BigDecimal downtownPopulation;
+		private String size;
+		private String type;
+	}
+
+
 }
