@@ -89,7 +89,7 @@ public class CsvReaderTest {
 	@Test
 	public void testReadInObj(){
 		CsvReader reader = new CsvReader();
-		List<City> data = reader.read(ResourceUtil.getReader("test_underline_data.csv", CharsetUtil.CHARSET_UTF_8), City.class);
+		List<City> data = reader.read(ResourceUtil.getReader("test_tsv_data.tsv", CharsetUtil.CHARSET_UTF_8), City.class);
 		System.out.println();
 	}
 	private class City{
@@ -99,6 +99,54 @@ public class CsvReaderTest {
 		private BigDecimal downtownPopulation;
 		private String size;
 		private String type;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getProvinceName() {
+			return provinceName;
+		}
+
+		public void setProvinceName(String provinceName) {
+			this.provinceName = provinceName;
+		}
+
+		public BigDecimal getPopulation() {
+			return population;
+		}
+
+		public void setPopulation(BigDecimal population) {
+			this.population = population;
+		}
+
+		public BigDecimal getDowntownPopulation() {
+			return downtownPopulation;
+		}
+
+		public void setDowntownPopulation(BigDecimal downtownPopulation) {
+			this.downtownPopulation = downtownPopulation;
+		}
+
+		public String getSize() {
+			return size;
+		}
+
+		public void setSize(String size) {
+			this.size = size;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
 	}
 
 

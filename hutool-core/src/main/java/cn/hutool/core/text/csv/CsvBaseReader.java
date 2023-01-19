@@ -4,12 +4,11 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.text.CharPool;
+import cn.hutool.core.util.*;
+import sun.nio.cs.StreamDecoder;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ public class CsvBaseReader implements Serializable {
 	 * 默认编码
 	 */
 	protected static final Charset DEFAULT_CHARSET = CharsetUtil.CHARSET_UTF_8;
+
+	protected static final char DEFAULT_FIELD_SEPARATOR = CharUtil.COMMA;
 
 	private final CsvReadConfig config;
 
@@ -140,6 +141,10 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	public CsvData read(Path path, Charset charset) throws IORuntimeException {
+		//通过名称判断是否是 tsv，如果是，则修改间隔符配置
+		if(StrUtil.endWith(path.getFileName().toString(), ".tsv", true)){
+			this.config.setFieldSeparator(CharPool.TAB);
+		}
 		Assert.notNull(path, "path must not be null");
 		return read(FileUtil.getReader(path, charset));
 	}
@@ -152,6 +157,15 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	public CsvData read(Reader reader) throws IORuntimeException {
+//		this.read(reader, );
+		//todo
+		return null;
+	}
+
+	public CsvData read(Reader reader, char fieldSeparator) throws IORuntimeException {
+		if(!CharUtil.isBlankChar(fieldSeparator)){
+			this.config.setFieldSeparator(fieldSeparator);
+		}
 		final CsvParser csvParser = parse(reader);
 		final List<CsvRow> rows = new ArrayList<>();
 		read(csvParser, rows::add);
@@ -187,20 +201,6 @@ public class CsvBaseReader implements Serializable {
 	 * @return Bean列表
 	 */
 	public <T> List<T> read(Reader reader, Class<T> clazz) {
-		// 此方法必须包含标题
-		return this.read(reader, clazz, new ConverterOptions());
-	}
-
-	/**
-	 * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader。<br>
-	 * 此方法默认识别首行为标题行。
-	 *
-	 * @param <T>    Bean类型
-	 * @param reader Reader
-	 * @param clazz  Bean类型
-	 * @return Bean列表
-	 */
-	public <T> List<T> read(Reader reader, Class<T> clazz, ConverterOptions converterEunm) {
 		// 此方法必须包含标题
 		this.config.setContainsHeader(true);
 
@@ -249,7 +249,9 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	private CsvParser parse(Reader reader) throws IORuntimeException {
+
 		return new CsvParser(reader, this.config);
+
 	}
 	//--------------------------------------------------------------------------------------------- Private method start
 }

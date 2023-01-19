@@ -17,8 +17,6 @@ public class CsvReadConfig extends CsvConfig implements Serializable {
 	protected boolean skipEmptyRows = true;
 	/** 每行字段个数不同时是否抛出异常，默认false */
 	protected boolean errorOnDifferentFieldCount;
-	/** 间隔符，默认为英文逗号, **/
-	protected CharSequence lineSpliter = ",";
 
 	/**
 	 * 默认配置

@@ -7,6 +7,7 @@ import cn.hutool.core.bean.copier.provider.BeanValueProvider;
 import cn.hutool.core.bean.copier.provider.DynaBeanValueProvider;
 import cn.hutool.core.bean.copier.provider.MapValueProvider;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.lang.copier.Copier;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.TypeUtil;
@@ -227,7 +228,11 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
 		// 遍历目标bean的所有属性
 		BeanUtil.descForEach(actualEditable, (prop)->{
 			if(false == prop.isWritable(this.copyOptions.isTransientSupport())){
-				// 字段不可写，跳过之
+				if(!StrUtil.startWith(prop.getFieldName(), "this")){
+					Console.log("[INFO] cn.hutool.core.bean.copier.BeanCopier#valueProviderToBean(); field '{}.{}' cannot be written.",
+							bean.getClass().getName(),
+							prop.getFieldName());
+				}
 				return;
 			}
 			// 检查属性名
