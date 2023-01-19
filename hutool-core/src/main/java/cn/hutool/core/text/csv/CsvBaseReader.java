@@ -157,9 +157,7 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	public CsvData read(Reader reader) throws IORuntimeException {
-//		this.read(reader, );
-		//todo
-		return null;
+		return this.read(reader, DEFAULT_FIELD_SEPARATOR);
 	}
 
 	public CsvData read(Reader reader, char fieldSeparator) throws IORuntimeException {
@@ -183,9 +181,15 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	public List<Map<String, String>> readMapList(Reader reader) throws IORuntimeException {
+		return this.readMapList(reader, DEFAULT_FIELD_SEPARATOR);
+	}
+
+	public List<Map<String, String>> readMapList(Reader reader, char fieldSeparator) throws IORuntimeException {
 		// 此方法必须包含标题
 		this.config.setContainsHeader(true);
-
+		if(!CharUtil.isBlankChar(fieldSeparator)){
+			this.config.setFieldSeparator(fieldSeparator);
+		}
 		final List<Map<String, String>> result = new ArrayList<>();
 		read(reader, (row) -> result.add(row.getFieldMap()));
 		return result;
@@ -201,9 +205,14 @@ public class CsvBaseReader implements Serializable {
 	 * @return Bean列表
 	 */
 	public <T> List<T> read(Reader reader, Class<T> clazz) {
+		return this.read(reader, clazz, DEFAULT_FIELD_SEPARATOR);
+	}
+	public <T> List<T> read(Reader reader, Class<T> clazz, char fieldSeparator) {
 		// 此方法必须包含标题
 		this.config.setContainsHeader(true);
-
+		if(!CharUtil.isBlankChar(fieldSeparator)){
+			this.config.setFieldSeparator(fieldSeparator);
+		}
 		final List<T> result = new ArrayList<>();
 		read(reader, (row) -> result.add(row.toBean(clazz)));
 		return result;
@@ -217,6 +226,12 @@ public class CsvBaseReader implements Serializable {
 	 * @throws IORuntimeException IO异常
 	 */
 	public void read(Reader reader, CsvRowHandler rowHandler) throws IORuntimeException {
+		this.read(reader, rowHandler, DEFAULT_FIELD_SEPARATOR);
+	}
+	public void read(Reader reader, CsvRowHandler rowHandler, char fieldSeparator) throws IORuntimeException {
+		if(!CharUtil.isBlankChar(fieldSeparator)){
+			this.config.setFieldSeparator(fieldSeparator);
+		}
 		read(parse(reader), rowHandler);
 	}
 
